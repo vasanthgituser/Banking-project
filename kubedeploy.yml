@@ -1,0 +1,38 @@
+# finance-deploy.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: finance-deploy
+  labels:
+    app: finance-deploy
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: finance-app  
+  template:
+    metadata:
+      labels:
+        app: finance-app  
+    spec:
+      containers:
+      - name: finance-container
+        image: vasanthdocuser/finance-build:v1.0
+        ports:
+        - containerPort: 8080
+---
+# nodeport-service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: finance-np-service
+  labels:
+    app: finance-app
+spec:
+  type: NodePort
+  ports:
+    - port: 8080
+      targetPort: 8080
+      nodePort: 30081
+  selector:
+    app: finance-app  
